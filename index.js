@@ -38,16 +38,17 @@ async function main() {
   const elonImageBuffer = await downloader.sourceImage('elon.jpeg');
   const elonIndexes = await rekog.indexFace(collectionId, elonImageBuffer); // add elon musk face to collection
 
-  const targetImageList = ['elon_fam.jpeg'];
-  const imageIds = await importTargetImagesToCollection(targetImageList, collectionId);
+  const targetImageList = ['elon_fam.jpeg', 'elon2.jpeg', 'bill_gates.jpeg', 'steve_jobs.jpeg'];
+  const imageIds = await importTargetImagesToCollection(targetImageList, collectionId); // return a list of imageIds after importing target images
 
-  // const source = await rekog.listFaces(sourceCollectionId);
-  // console.log(source);
-  // const target = await rekog.listFaces(targetCollectionId);
-  // console.log(target);
+  const matchingImageIds = await rekog.searchImagesWithMatchedFace(collectionId, elonIndexes.faceId);
+  const matchingImages = [];
+  matchingImageIds.forEach((matchingImageId) => {
+    const index = imageIds.findIndex((element) => element === matchingImageId);
+    matchingImages.push(targetImageList[index]);
+  });
 
-  const response = await rekog.searchFaces(collectionId, elonIndexes.faceId);
-  console.log(JSON.stringify(response));
+  console.log(matchingImages);
 }
 
 main();
